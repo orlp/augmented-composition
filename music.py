@@ -48,23 +48,31 @@ class Instrument(object):
         self.program = program
         self.notes = []
         self.is_drum = is_drum
+        self.time_offset = 0
 
-    def play_note(self, time_offset, pitch, duration=1, velocity=64):
-        self.notes.append((time_offset, pitch, duration, velocity))
+    def play(self, pitch, duration, velocity=64):
+        self.notes.append((self.time_offset, pitch, duration, velocity))
+        self.time_offset += duration
+
+    def play_poly(self, pitch, duration=1, velocity=64):
+        self.notes.append((self.time_offset, pitch, duration, velocity))
+
+    def rest(self, time):
+        self.time_offset += time
         
 
 piano = Instrument(0)
 for i in range(4):
-    piano.play_note(4*i+0, 64, 1)
-    piano.play_note(4*i+1, 66, 1)
-    piano.play_note(4*i+2, 68, 1)
-    piano.play_note(4*i+3, 69, 1)
+    piano.play(64, 1)
+    piano.play(66, 1)
+    piano.play(68, 1)
+    piano.play(69, 1)
 
 drums = Instrument(0, True)
 for i in range(16):
-    drums.play_note(i, 35)
-    drums.play_note(i, 42)
-    drums.play_note(i + 0.5, 42)
+    drums.play_poly(35)
+    drums.play(42, 0.5)
+    drums.play(42, 0.5)
 
 song = Song()
 song.add_instrument(piano)
